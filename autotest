@@ -1,0 +1,69 @@
+#!/bin/bash
+
+if [ "$#" -lt 1 ]; then
+    echo "Usage: $0 <interpreter>"
+    exit 1
+fi
+
+if [ "$2" == "--verbose" ]; then
+    verbose=1
+else
+    verbose=0
+fi
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+error_cases="$DIR/error-cases"
+pass_cases="$DIR/pass-cases"
+
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+RESET='\033[0m'
+
+# Run Error Cases
+printf "Error cases:\n"
+for testcase in $(find "$error_cases" -mindepth 1 -maxdepth 1 -type d); do
+    name=$(basename $testcase)
+    if [ -f "$testcase/test.name" ]; then
+        name=$(cat "$testcase/test.name")
+    fi
+    $1 "$testcase/test.code" "$testcase/test.data" &> "$testcase/temp.out"
+    ran=$?
+    grep "ERROR" "$testcase/temp.out" > /dev/null
+    if [ $? -eq 0 ] && [ $ran -eq 0 ]; then
+        printf "[${GREEN}PASS${RESET}] $name\n"
+    else
+        printf "[${RED}FAIL${RESET}] $name\n"
+        if [ -f "$testcase/test.help" ]; then
+            printf " - Help: $(cat "$testcase/test.help")\n"
+        fi
+    fi
+    if [ $verbose -eq 1 ]; then
+        printf "$(cat "$testcase/temp.out")\n"
+    fi
+
+    rm "$testcase/temp.out"
+done
+
+# Run Pass Cases
+printf "Pass cases:\n"
+for testcase in $(find "$pass_cases" -mindepth 1 -maxdepth 1 -type d); do
+    $1 "$testcase/test.code" "$testcase/test.data" &> "$testcase/temp.out"
+    difference=$(diff "$testcase/test.expected" "$testcase/temp.out" | wc -l)
+    name=$(basename $testcase)
+    if [ -f "$testcase/test.name" ]; then
+        name=$(cat "$testcase/test.name")
+    fi
+    if [ "$difference" -eq "0" ]; then
+        printf "[${GREEN}PASS${RESET}] $name\n"
+    else
+        printf "[${RED}FAIL${RESET}] $name\n"
+        if [ -f "$testcase/test.help" ]; then
+            printf " - Help: $(cat "$testcase/test.help")\n"
+        fi
+    fi
+    if [ $verbose -eq 1 ]; then
+        printf "$(cat "$testcase/temp.out")\n"
+    fi
+    rm "$testcase/temp.out"
+done
+
