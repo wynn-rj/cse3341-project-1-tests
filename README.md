@@ -27,7 +27,7 @@ suppressing it
 Each test is defined by a folder in the `pass-cases` or the `error-cases` 
 folders. The name of the folder can be arbitrary, but it will be used to 
 identify the test when running the automated tester unless a 
-[name file](#name-file) is included.
+[name file](#name-files) is included.
 
 Each test cases requires a `test.data` file and a `test.code` file. If the case 
 is expected to succeed it should be places in the `pass-cases` folder, otherwise
