@@ -1,0 +1,8 @@
+program
+  int x;
+begin
+  input x;
+  if x > 1 then
+    output x;
+  endif;
+end
