@@ -1,0 +1,7 @@
+program
+int x;
+begin
+if 5 < 3 then if 3 < 5 then x:=1; else x:=2; endif; else if 4 <= 2 then 
+x:=3; else x:= 4; endif; endif;
+output x;
+end
