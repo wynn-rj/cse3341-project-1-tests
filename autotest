@@ -7,6 +7,8 @@ fi
 
 if [ "$2" == "--verbose" ]; then
     verbose=1
+elif [ "$2" == "--error" ]; then
+    verbose=2
 else
     verbose=0
 fi
@@ -36,6 +38,9 @@ for testcase in $(find "$error_cases" -mindepth 1 -maxdepth 1 -type d); do
         if [ -f "$testcase/test.help" ]; then
             printf " - Help: $(cat "$testcase/test.help")\n"
         fi
+    fi
+    if [ $verbose -eq 2 ]; then
+        printf " - Error: $(cat "$testcase/temp.out" | grep "ERROR")\n"
     fi
     if [ $verbose -eq 1 ]; then
         printf "$(cat "$testcase/temp.out")\n"

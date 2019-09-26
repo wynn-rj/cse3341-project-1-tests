@@ -8,7 +8,7 @@ included in here for ease of use
 `autotest` can run your interpreter against all the test cases. The
 autotester is invoked as below:
 ```
-./autotest <interpreter> [--verbose]
+./autotest <interpreter> [--verbose|--error]
 ```
 The interpreter argument is how to run your interpreter, if your interpreter
 is a compiled binary then this can be run as 
@@ -19,9 +19,11 @@ If your interpreter is a python program then it can be run as
 ```
 ./autotest "python3 path/to/interpreter.py"
 ```
-The optional `--verbose` flag must be specified at the end and if it is the 
-autotester will print the interpreter output for all test cases instead of
-suppressing it
+The optional flags must be specified at the end. If the `--verbose` flag is set 
+the autotester will print the interpreter output for all test cases instead of
+suppressing it. If the `--error` flag is specified the error recieved in the 
+error cases will be printed. This is useful for checking that your error values
+are correct
 
 ## Creating test cases
 Each test is defined by a folder in the `pass-cases` or the `error-cases` 
