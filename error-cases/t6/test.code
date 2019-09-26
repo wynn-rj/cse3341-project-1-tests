@@ -1,0 +1,6 @@
+program
+ int x;
+begin 
+ if x<50k1
+ then x:=1; endif;
+end
