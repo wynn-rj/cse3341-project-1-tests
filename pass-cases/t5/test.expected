@@ -7,7 +7,7 @@ begin
     1:x+7
     |3,5:y*(x-z-27)
     |7:y-2
-    else -266471638
+    else 266471638
   end;
   output z;
 end
