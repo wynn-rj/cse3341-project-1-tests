@@ -52,3 +52,8 @@ will be used as the name of the test case
 ### Help files
 With each test a `test.help` file can be specified that contains text to help
 explain how to fix the interpreter if the case were to error
+
+## Imported test cases
+Certain test cases have been included from other test case repositories. Test
+cases that start with `imported-corelang-test-files` are imported from 
+[this](https://github.com/zqianem/corelang-test-files) repo
