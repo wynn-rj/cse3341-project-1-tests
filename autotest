@@ -16,6 +16,7 @@ fi
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 error_cases="$DIR/error-cases"
 pass_cases="$DIR/pass-cases"
+fail_cnt=0
 
 GREEN='\033[0;32m'
 RED='\033[0;31m'
@@ -38,6 +39,7 @@ for testcase in $(find "$error_cases" -mindepth 1 -maxdepth 1 -type d); do
         if [ -f "$testcase/test.help" ]; then
             printf " - Help: $(cat "$testcase/test.help")\n"
         fi
+        fail_cnt=$((fail_cnt+1))
     fi
     if [ $verbose -eq 2 ]; then
         printf " - Error: $(cat "$testcase/temp.out" | grep "ERROR")\n"
@@ -65,6 +67,7 @@ for testcase in $(find "$pass_cases" -mindepth 1 -maxdepth 1 -type d); do
         if [ -f "$testcase/test.help" ]; then
             printf " - Help: $(cat "$testcase/test.help")\n"
         fi
+        fail_cnt=$((fail_cnt+1))
     fi
     if [ $verbose -eq 1 ]; then
         printf "$(cat "$testcase/temp.out")\n"
@@ -72,3 +75,13 @@ for testcase in $(find "$pass_cases" -mindepth 1 -maxdepth 1 -type d); do
     rm "$testcase/temp.out"
 done
 
+if [ $fail_cnt -eq 0 ]; then
+    printf "${GREEN}PASSED ALL TEST CASES${RESET}\n"
+else
+    if [ $fail_cnt -eq 1 ]; then
+        plural=""
+    else
+        plural="S"
+    fi
+    printf "${RED}FAILED ${RESET}$fail_cnt${RED} TEST CASE$plural${RESET}\n"
+fi
