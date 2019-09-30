@@ -1,0 +1,70 @@
+#!/bin/bash
+
+md5() {
+    echo "$(md5sum $1 | awk -F' ' '{ print $1 }')"
+}
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
+# Import from https://github.com/zqianem/corelang-test-files.git
+cd $DIR
+printf "Cloning corelang-test-files.."
+$(git clone https://github.com/zqianem/corelang-test-files.git &> /dev/null)
+printf " done\n"
+corelangdir="$DIR/corelang-test-files"
+
+count=0
+for ttype in $(find "$corelangdir" -mindepth 1 -maxdepth 1 -type d ! -name "*.*"); do
+    typename=$(basename $ttype)
+    for tcase in $(find "$ttype" -type f -name "*.code"); do
+        tbasename=$(basename ${tcase%\.code})
+        if [[ $tbasename == bad* ]]; then
+            ptype="error case"
+            case_dir="$DIR/error-cases"
+        else
+            ptype="pass case"
+            case_dir="$DIR/pass-cases"
+        fi
+        is_unique=true
+        thash=$(md5 $tcase)
+        for existing in $(find $case_dir -name "*.code"); do
+            ehash=$(md5 $existing)
+            if [ "$ehash" == "$thash" ]; then
+                is_unique=false
+                break
+            fi
+        done
+        if ! $is_unique ; then
+            continue
+        fi
+        tname=${tcase%\.code}
+        tdata="$tname.data"
+        texpected="$tname.expected"
+        thelp="$tname.remarks"
+        new_dir="$case_dir/imported-corelang-test-files-$typename-$tbasename"
+        mkdir $new_dir
+        cp $tcase "$new_dir/test.code"
+        if [ -f $tdata ]; then
+            cp $tdata "$new_dir/test.data"
+        else
+            touch "$new_dir/test.data"
+        fi
+
+        if [ -f $texpected ]; then
+            cp $texpected "$new_dir/test.expected"
+        fi
+
+        if [ -f $thelp ]; then
+            cp $thelp "$new_dir/test.help"
+        fi
+
+        echo "$typename $tbasename (Imported from corelan-test-files)" \
+            > "$new_dir/test.name"
+        echo "Imported $ptype $typename-$tbasename from corelang-test-files"
+        count=$((count+1))
+    done
+done
+
+echo "Imported $count test cases"
+
+rm -rf $corelangdir
