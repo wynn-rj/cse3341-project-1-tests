@@ -19,6 +19,14 @@ If your interpreter is a python program then it can be run as
 ```
 ./autotest "python3 path/to/interpreter.py"
 ```
+
+If your interpreter is a java program then it can be run as
+```
+./autotest-java path/to/MainClass
+```
+Their is a separate java autotester because java requires that it be run from
+the same directory as the class file
+
 The optional flags must be specified at the end. If the `--verbose` flag is set 
 the autotester will print the interpreter output for all test cases instead of
 suppressing it. If the `--error` flag is specified the error recieved in the 
