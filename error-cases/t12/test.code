@@ -1,0 +1,8 @@
+program
+  int x;
+begin
+  x:=6;
+  if x<5or 10<x then
+    output x;
+  endif;
+end
